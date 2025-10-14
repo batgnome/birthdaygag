@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🎁 Birthday Gift</title>
+  <style>
+    :root {
+      --bg: #0f1221;
+      --card: #151834;
+      --accent: #8b5cf6; /* purple */
+      --accent-2: #22d3ee; /* cyan */
+      --text: #e6e8ff;
+      --muted: #a6abff;
+      --box: #ff4d6d; /* box base */
+      --box-dark: #e23a5b;
+      --ribbon: #ffd166;
+      --shadow: 0 20px 50px rgba(0,0,0,.35);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 70% -10%, rgba(139,92,246,.3), transparent 60%),
+                  radial-gradient(1200px 800px at 10% 110%, rgba(34,211,238,.25), transparent 60%), var(--bg);
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .wrap {
+      width: min(680px, 92vw);
+      text-align: center;
+      padding: 28px 22px 36px;
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(6px);
+    }
+
+    h1 { margin: 4px 0 6px; font-size: clamp(1.4rem, 2.2vw + 1rem, 2.15rem); }
+    p { margin: 0; color: var(--muted); }
+
+    .stage {
+      position: relative;
+      height: 360px;
+      margin: 26px auto 8px;
+      display: grid; place-items: center;
+      isolation: isolate;
+    }
+
+    /* Gift box */
+    .gift {
+      --size: 200px;
+      width: var(--size);
+      height: calc(var(--size) * .75);
+      position: relative;
+      cursor: pointer;
+      user-select: none;
+      transform: translateZ(0);
+    }
+
+    .base {
+      position: absolute; inset: auto 0 0 0; height: 68%;
+      background: linear-gradient(180deg, var(--box), var(--box-dark));
+      border-radius: 12px;
+      box-shadow: 0 12px 30px rgba(0,0,0,.25), inset 0 -2px 0 rgba(0,0,0,.2);
+    }
+
+    .lid {
+      position: absolute; inset: 0 0 auto 0; height: 44%;
+      background: linear-gradient(180deg, var(--box-dark), var(--box));
+      border-radius: 12px 12px 10px 10px;
+      box-shadow: 0 8px 18px rgba(0,0,0,.25);
+      transform-origin: 50% 110%;
+      transition: transform .7s cubic-bezier(.2,.7,.2,1), filter .4s;
+    }
+
+    .ribbon-v, .ribbon-h {
+      position: absolute; inset: 0;
+      pointer-events: none;
+    }
+    .ribbon-v::before {
+      content: ""; position: absolute; left: 50%; transform: translateX(-50%);
+      top: -10%; bottom: -8%; width: 22px; background: var(--ribbon);
+      border-radius: 12px; box-shadow: inset 0 -3px rgba(0,0,0,.2);
+    }
+    .ribbon-h::before {
+      content: ""; position: absolute; top: 48%; left: -3%; right: -3%; height: 22px; background: var(--ribbon);
+      border-radius: 12px; box-shadow: inset 0 -3px rgba(0,0,0,.2);
+    }
+
+    .bow {
+      position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+      width: 110px; height: 70px; pointer-events: none;
+    }
+    .bow::before, .bow::after {
+      content: ""; position: absolute; top: 0; width: 52px; height: 52px;
+      background: var(--ribbon); border-radius: 50% 50% 8px 50%;
+      box-shadow: inset 0 -6px rgba(0,0,0,.2);
+    }
+    .bow::before { left: 0; transform: rotate(-35deg); }
+    .bow::after { right: 0; transform: scaleX(-1) rotate(-35deg); }
+
+    /* Surprise */
+    .surprise {
+      position: absolute; inset: 0; display: grid; place-items: center;
+      transform: translateY(18px);
+      z-index: -1; /* sits behind lid until opened */
+    }
+    .finger {
+      font-size: 80px; filter: drop-shadow(0 8px 18px rgba(0,0,0,.45));
+      opacity: 0; transform: translateY(18px) scale(.7) rotate(-6deg);
+      transition: opacity .45s ease .25s, transform .75s cubic-bezier(.2,.8,.2,1) .15s;
+    }
+
+    /* Hover wiggle */
+    .gift:hover .lid { filter: brightness(1.05); }
+    .gift:hover .base { filter: brightness(1.03); }
+
+    /* Opened state */
+    .opened .lid {
+      transform: translateY(-90px) rotate(-24deg);
+    }
+    .opened .finger {
+      opacity: 1; transform: translateY(-66px) scale(1) rotate(0deg);
+    }
+
+    /* CTA + footer */
+    .cta { color: var(--muted); font-size: .975rem; }
+    .actions { margin-top: 14px; display: flex; gap: 12px; justify-content: center; }
+    .btn {
+      background: linear-gradient(180deg, var(--accent), #6d28d9);
+      color: white; border: 0; padding: 10px 14px; border-radius: 12px; cursor: pointer; font-weight: 600;
+      box-shadow: 0 10px 22px rgba(139,92,246,.35);
+    }
+    .btn.secondary {
+      background: linear-gradient(180deg, #334155, #1f2937);
+      color: #e5e7eb; box-shadow: 0 10px 22px rgba(0,0,0,.35);
+    }
+
+    .tag {
+      margin-top: 18px; font-size: .9rem; color: #c7d2fe;
+      background: rgba(99,102,241,.12); padding: 8px 12px; border-radius: 999px;
+      display: inline-flex; gap: 8px; align-items: center;
+      border: 1px solid rgba(99,102,241,.25);
+    }
+    .tag .spark { filter: drop-shadow(0 3px 6px rgba(255,255,255,.15)); }
+
+    /* Confetti */
+    canvas#confetti { position: absolute; inset: 0; pointer-events: none; z-index: 5; }
+
+    /* Reduce motion */
+    @media (prefers-reduced-motion: reduce) {
+      .lid, .finger { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Happy Birthday, <span id="friendName">Richard!</span> 🎉</h1>
+    <p class="cta">Tap the gift to open it. What could possibly go wrong?</p>
+
+    <div class="stage">
+      <canvas id="confetti"></canvas>
+      <div class="gift" id="gift" aria-label="Gift box. Click to open" role="button" tabindex="0">
+        <div class="lid">
+          <div class="bow"></div>
+          <div class="ribbon-h"></div>
+        </div>
+        <div class="base">
+          <div class="ribbon-v"></div>
+        </div>
+        <div class="surprise" aria-hidden="true">
+          <div class="finger" id="finger" title="With love">🖕</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn" id="openBtn">Open Gift</button>
+      <button class="btn secondary" id="resetBtn">Reset</button>
+    </div>
+
+    <div class="tag">
+      <span class="spark">✨</span>
+      <span id="tagline">Wishing you questionable surprises and maximum chaos.</span>
+    </div>
+  </div>
+
+  <script>
+    // --- Personalize quickly ---
+    const params = new URLSearchParams(window.location.search);
+    const friend = params.get('name') || '';
+    const note = params.get('note') || '';
+    if (friend) document.getElementById('friendName').textContent = friend;
+    if (note) document.getElementById('tagline').textContent = note;
+
+    // --- Gift interactions ---
+    const gift = document.getElementById('gift');
+    const openBtn = document.getElementById('openBtn');
+    const resetBtn = document.getElementById('resetBtn');
+
+    function openGift() {
+      if (!gift.classList.contains('opened')) {
+        gift.classList.add('opened');
+        burst();
+      }
+    }
+    function resetGift() {
+      gift.classList.remove('opened');
+      clearConfetti();
+    }
+
+    gift.addEventListener('click', openGift);
+    gift.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openGift(); }
+    });
+    openBtn.addEventListener('click', openGift);
+    resetBtn.addEventListener('click', resetGift);
+
+    // --- Tiny confetti engine ---
+    const canvas = document.getElementById('confetti');
+    const ctx = canvas.getContext('2d');
+    let pieces = []; let animId; let t0;
+
+    function sizeCanvas() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = Math.ceil(rect.width);
+      canvas.height = Math.ceil(rect.height);
+    }
+    sizeCanvas();
+    addEventListener('resize', sizeCanvas);
+
+    function burst() {
+      const colors = ['#f472b6', '#60a5fa', '#34d399', '#fbbf24', '#c084fc', '#fb7185'];
+      const N = 120;
+      const { width, height } = canvas;
+      pieces = new Array(N).fill(0).map(() => ({
+        x: width / 2 + (Math.random() - .5) * 40,
+        y: height / 2 + 10,
+        r: 3 + Math.random() * 4,
+        w: 6 + Math.random() * 8,
+        h: 6 + Math.random() * 10,
+        vx: (Math.random() - .5) * 6,
+        vy: - (3 + Math.random() * 6),
+        rot: Math.random() * Math.PI,
+        vr: (Math.random() - .5) * .3,
+        color: colors[(Math.random() * colors.length) | 0],
+        shape: Math.random() < .6 ? 'rect' : 'circle',
+        life: 0
+      }));
+      t0 = performance.now();
+      cancelAnimationFrame(animId);
+      animate();
+    }
+
+    function animate(ts) {
+      const { width, height } = canvas;
+      ctx.clearRect(0,0,width,height);
+      pieces.forEach(p => {
+        p.vy += .08; // gravity
+        p.x += p.vx; p.y += p.vy;
+        p.rot += p.vr; p.life += 1;
+        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.fillStyle = p.color;
+        if (p.shape === 'rect') ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+        else { ctx.beginPath(); ctx.arc(0,0,p.r,0,Math.PI*2); ctx.fill(); }
+        ctx.restore();
+      });
+      pieces = pieces.filter(p => p.y < height + 40 && p.life < 600);
+      if (pieces.length) animId = requestAnimationFrame(animate);
+    }
+
+    function clearConfetti() {
+      pieces = []; cancelAnimationFrame(animId);
+      ctx.clearRect(0,0,canvas.width, canvas.height);
+    }
+
+    // Optional: auto-focus for keyboard users
+    window.addEventListener('load', () => gift.focus());
+  </script>
+</body>
+</html>
